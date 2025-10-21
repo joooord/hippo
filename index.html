@@ -3,8 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hello World</title>
+    <title>Hello World — The Aurora Edition</title>
     <style>
+        :root {
+            color-scheme: dark;
+            --bg-one: #03001c;
+            --bg-two: #090a3c;
+            --accent-one: #5b8bf7;
+            --accent-two: #ff6bd6;
+            --accent-three: #34f5c5;
+            --accent-four: #ffd56f;
+            --glass: rgba(255, 255, 255, 0.08);
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -12,115 +23,359 @@
         }
 
         body {
-            font-family: 'Georgia', 'Times New Roman', serif;
-            background: linear-gradient(135deg, #45B7D1 0%, #FF8C42 30%, #FF6B9D 60%, #C589E8 100%);
             min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            font-family: "Space Grotesk", "Segoe UI", system-ui, sans-serif;
+            display: grid;
+            place-items: center;
+            background: radial-gradient(circle at 20% 20%, #1a1859, transparent 55%),
+                        radial-gradient(circle at 80% 30%, #1f4a77, transparent 60%),
+                        radial-gradient(circle at 50% 80%, #2a0f40, transparent 65%),
+                        var(--bg-one);
             overflow: hidden;
             position: relative;
+            perspective: 1200px;
+            color: white;
+            animation: ambientShift 28s linear infinite alternate;
         }
 
-        /* Animated background particles */
-        body::before {
-            content: '';
+        body::before,
+        body::after {
+            content: "";
             position: absolute;
-            width: 200%;
-            height: 200%;
-            background-image:
-                radial-gradient(circle, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
-            background-size: 50px 50px;
-            animation: float 20s linear infinite;
+            inset: -20vh;
+            background: conic-gradient(from 0deg,
+                rgba(91, 139, 247, 0.12) 0deg,
+                rgba(255, 107, 214, 0.15) 120deg,
+                rgba(52, 245, 197, 0.18) 240deg,
+                rgba(255, 213, 111, 0.15) 360deg);
+            filter: blur(90px);
+            transform: rotate(0deg) scale(1.1);
+            animation: swirl 40s linear infinite;
+            pointer-events: none;
         }
 
-        @keyframes float {
-            0% {
-                transform: translate(0, 0);
-            }
-            100% {
-                transform: translate(-50px, -50px);
-            }
+        body::after {
+            mix-blend-mode: screen;
+            animation-duration: 65s;
+            opacity: 0.7;
         }
 
-        .container {
+        @keyframes ambientShift {
+            0% { background-position: 0 0, 40px 20px, 10px 60px; }
+            100% { background-position: 80px -40px, -30px 30px, -60px -90px; }
+        }
+
+        @keyframes swirl {
+            to { transform: rotate(360deg) scale(1.25); }
+        }
+
+        .galaxy {
+            position: absolute;
+            inset: -30vh;
+            background:
+                radial-gradient(circle at center, rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0) 55%),
+                repeating-conic-gradient(from 0deg, rgba(255, 255, 255, 0.1) 0deg 15deg, transparent 15deg 30deg);
+            mask: radial-gradient(circle, rgba(0, 0, 0, 0.92) 20%, rgba(0, 0, 0, 0.55) 60%, transparent 80%);
+            animation: pulse 18s ease-in-out infinite;
+            opacity: 0.6;
+            mix-blend-mode: screen;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.5; }
+            50% { transform: scale(1.08) rotate(5deg); opacity: 0.9; }
+        }
+
+        .aura {
+            position: absolute;
+            width: min(60vw, 600px);
+            aspect-ratio: 1 / 1;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, rgba(255, 213, 111, 0.35), transparent 55%),
+                        radial-gradient(circle at 70% 70%, rgba(52, 245, 197, 0.35), transparent 55%),
+                        radial-gradient(circle at 50% 60%, rgba(91, 139, 247, 0.25), transparent 60%);
+            mix-blend-mode: plus-lighter;
+            filter: blur(12px);
+            animation: hover 12s ease-in-out infinite;
+        }
+
+        @keyframes hover {
+            0%, 100% { transform: translate3d(-6vw, -2vh, 0) scale(1); }
+            50% { transform: translate3d(6vw, 3vh, 0) scale(1.08); }
+        }
+
+        main {
             position: relative;
-            z-index: 1;
-            text-align: center;
-            padding: 3rem;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            animation: fadeIn 1.5s ease-in-out;
+            padding: clamp(2.5rem, 3vw, 4rem);
+            width: min(90vw, 620px);
+            border-radius: 32px;
+            background: linear-gradient(125deg, rgba(10, 10, 24, 0.88), rgba(10, 18, 52, 0.6));
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(24px);
+            transform-style: preserve-3d;
+            transition: transform 0.8s cubic-bezier(0.19, 1, 0.22, 1);
         }
 
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        main::before {
+            content: "";
+            position: absolute;
+            inset: 12px;
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            mask: linear-gradient(white, white) content-box, linear-gradient(white, white);
+            mask-composite: exclude;
+            padding: 1px;
         }
 
         h1 {
-            font-size: 5rem;
-            font-weight: 300;
-            letter-spacing: 0.3rem;
-            color: #ffffff;
+            font-size: clamp(3rem, 6vw, 5.5rem);
+            letter-spacing: 0.1em;
             text-transform: uppercase;
-            margin-bottom: 1rem;
+            line-height: 1;
+            margin-bottom: 1.75rem;
+            background: linear-gradient(90deg, var(--accent-one), var(--accent-two), var(--accent-three), var(--accent-four));
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            color: transparent;
+            animation: glowText 12s ease-in-out infinite;
+        }
+
+        @keyframes glowText {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        h1 span {
+            display: block;
         }
 
         .subtitle {
-            font-size: 1.2rem;
-            color: rgba(255, 255, 255, 0.8);
-            letter-spacing: 0.15rem;
-            font-weight: 300;
-            font-style: italic;
+            font-size: clamp(1rem, 2vw, 1.4rem);
+            line-height: 1.7;
+            color: rgba(255, 255, 255, 0.85);
+            max-width: 38ch;
         }
 
-        .line {
-            width: 100px;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, #FFD700, transparent);
-            margin: 2rem auto;
-            animation: expand 2s ease-in-out infinite alternate;
+        .subtitle strong {
+            color: var(--accent-three);
+            font-weight: 600;
         }
 
-        @keyframes expand {
-            from {
-                width: 100px;
-            }
-            to {
-                width: 200px;
-            }
+        .subtitle .cycle {
+            display: inline-block;
+            min-width: 6ch;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            font-size: 0.85em;
+            color: var(--accent-four);
         }
 
-        @media (max-width: 768px) {
-            h1 {
-                font-size: 3rem;
-                letter-spacing: 0.2rem;
+        .celestial-divider {
+            width: 100%;
+            height: 1px;
+            margin: 2.5rem 0;
+            position: relative;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+        }
+
+        .celestial-divider::before,
+        .celestial-divider::after {
+            content: "";
+            position: absolute;
+            top: -7px;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.8) 0%, transparent 65%);
+            animation: orbit 10s linear infinite;
+        }
+
+        .celestial-divider::before {
+            left: 8%;
+            animation-delay: -3s;
+        }
+
+        .celestial-divider::after {
+            right: 8%;
+        }
+
+        @keyframes orbit {
+            0% { transform: translateX(-12px) scale(1); }
+            50% { transform: translateX(12px) scale(1.25); }
+            100% { transform: translateX(-12px) scale(1); }
+        }
+
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .actions button,
+        .actions a {
+            font: inherit;
+            border: none;
+            border-radius: 999px;
+            padding: 0.9rem 1.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.5s ease, background-position 0.8s ease, color 0.5s ease;
+        }
+
+        .primary-action {
+            background: linear-gradient(120deg, var(--accent-one), var(--accent-two), var(--accent-three));
+            background-size: 200% 200%;
+            color: #05060f;
+        }
+
+        .primary-action:hover {
+            transform: translateY(-4px) scale(1.02);
+            background-position: 100% 0%;
+        }
+
+        .ghost-action {
+            background: rgba(255, 255, 255, 0.12);
+            color: rgba(255, 255, 255, 0.85);
+        }
+
+        .ghost-action:hover {
+            transform: translateY(-4px) scale(1.02);
+            color: white;
+        }
+
+        .starmap {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            opacity: 0.35;
+            background-image: radial-gradient(rgba(255, 255, 255, 0.4) 1px, transparent 1px);
+            background-size: 40px 40px;
+            mix-blend-mode: screen;
+            animation: drift 25s linear infinite;
+        }
+
+        @keyframes drift {
+            to { transform: translate3d(-40px, -40px, 0); }
+        }
+
+        .equation {
+            margin-top: 2rem;
+            font-family: "IBM Plex Mono", "Fira Code", monospace;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.3em;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .equation span {
+            color: var(--accent-two);
+        }
+
+        .signature {
+            margin-top: 2rem;
+            font-size: 0.85rem;
+            letter-spacing: 0.5em;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        @media (max-width: 540px) {
+            main {
+                padding: 2rem;
+                border-radius: 24px;
             }
 
             .subtitle {
-                font-size: 1rem;
+                letter-spacing: 0.04em;
             }
 
-            .container {
-                padding: 2rem;
+            .actions {
+                flex-direction: column;
             }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Hello World</h1>
-        <div class="line"></div>
-        <p class="subtitle">Something beautiful is coming</p>
-    </div>
+    <div class="galaxy" aria-hidden="true"></div>
+    <div class="aura" aria-hidden="true"></div>
+    <main id="portal">
+        <div class="starmap" aria-hidden="true"></div>
+        <h1>
+            <span>Hello</span>
+            <span>World</span>
+        </h1>
+        <p class="subtitle">
+            You have arrived at the <strong>edge of possibility</strong>, where code shimmers like constellations
+            and imagination bends reality into <span class="cycle" id="cycle">echoes</span>.
+        </p>
+        <div class="celestial-divider" aria-hidden="true"></div>
+        <div class="actions">
+            <button class="primary-action" id="launch">Ignite the Aurora</button>
+            <button class="ghost-action" id="listen">Hear the Silence</button>
+        </div>
+        <div class="equation">HELLO × WORLD = <span>∞</span></div>
+        <div class="signature">TRANSMISSION • 001</div>
+    </main>
+    <script>
+        const portal = document.getElementById('portal');
+        const cycle = document.getElementById('cycle');
+        const launch = document.getElementById('launch');
+        const listen = document.getElementById('listen');
+
+        const phrases = ['auroras', 'echoes', 'dreams', 'signals', 'possibilities'];
+        let index = 0;
+
+        setInterval(() => {
+            index = (index + 1) % phrases.length;
+            cycle.animate([
+                { opacity: 1, filter: 'blur(0px)', transform: 'translateY(0)' },
+                { opacity: 0, filter: 'blur(8px)', transform: 'translateY(20px)' },
+                { opacity: 0, filter: 'blur(8px)', transform: 'translateY(-20px)' },
+                { opacity: 1, filter: 'blur(0px)', transform: 'translateY(0)' }
+            ], { duration: 1400, easing: 'ease-in-out' });
+            setTimeout(() => cycle.textContent = phrases[index], 350);
+        }, 2800);
+
+        const respond = (element, intensity = 18) => {
+            window.addEventListener('pointermove', (event) => {
+                const { innerWidth, innerHeight } = window;
+                const rotateX = ((event.clientY / innerHeight) - 0.5) * -intensity;
+                const rotateY = ((event.clientX / innerWidth) - 0.5) * intensity;
+                element.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+            });
+
+            window.addEventListener('pointerleave', () => {
+                element.style.transform = 'rotateX(0deg) rotateY(0deg)';
+            });
+        };
+
+        respond(portal);
+
+        launch.addEventListener('click', () => {
+            document.body.animate([
+                { filter: 'hue-rotate(0deg) saturate(1)' },
+                { filter: 'hue-rotate(160deg) saturate(1.4)' },
+                { filter: 'hue-rotate(320deg) saturate(1)' }
+            ], { duration: 2600, easing: 'ease-in-out' });
+        });
+
+        listen.addEventListener('click', () => {
+            const osc = new (window.AudioContext || window.webkitAudioContext)();
+            const now = osc.currentTime;
+            const gain = osc.createGain();
+            const oscillator = osc.createOscillator();
+            oscillator.type = 'sine';
+            oscillator.frequency.setValueAtTime(432, now);
+            gain.gain.setValueAtTime(0.001, now);
+            gain.gain.exponentialRampToValueAtTime(0.3, now + 0.2);
+            gain.gain.exponentialRampToValueAtTime(0.0001, now + 2.4);
+            oscillator.connect(gain).connect(osc.destination);
+            oscillator.start(now);
+            oscillator.stop(now + 2.6);
+            oscillator.addEventListener('ended', () => osc.close());
+        });
+    </script>
 </body>
 </html>
