@@ -127,27 +127,35 @@
             padding: 1px;
         }
 
-        h1 {
-            font-size: clamp(3rem, 6vw, 5.5rem);
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            line-height: 1;
+        .word-container {
+            perspective: 1000px;
             margin-bottom: 1.75rem;
-            background: linear-gradient(90deg, var(--accent-one), var(--accent-two), var(--accent-three), var(--accent-four));
-            background-size: 300% 300%;
-            -webkit-background-clip: text;
-            color: transparent;
-            animation: glowText 12s ease-in-out infinite;
-        }
+          }
 
-        @keyframes glowText {
-            0%, 100% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-        }
+          .word {
+            display: flex;
+            transform-style: preserve-3d;
+            animation: rotateWord 30s linear infinite;
+          }
 
-        h1 span {
-            display: block;
-        }
+          @keyframes rotateWord {
+            from {
+              transform: rotateX(0deg) rotateY(0deg);
+            }
+            to {
+              transform: rotateX(360deg) rotateY(360deg);
+            }
+          }
+
+          .letter {
+            font-size: clamp(3rem, 6vw, 5.5rem);
+            font-weight: bold;
+            color: #fff;
+            padding: 0 10px;
+            transform-style: preserve-3d;
+            transition: transform 0.5s ease;
+            text-shadow: 0 0 5px #00baff, 0 0 10px #00baff, 0 0 20px #00baff, 0 0 40px #00baff;
+          }
 
         .subtitle {
             font-size: clamp(1rem, 2vw, 1.4rem);
@@ -257,9 +265,52 @@
             animation: drift 25s linear infinite;
         }
 
+        #black-hole {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            width: 100px;
+            height: 100px;
+            background: radial-gradient(circle, #000 0%, rgba(0, 0, 0, 0) 70%);
+            border-radius: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            transition: transform 1s ease;
+            z-index: 9999;
+          }
+
+          #black-hole.active {
+            transform: translate(-50%, -50%) scale(1);
+          }
+
+          .pull-in {
+            transition: transform 1s ease;
+          }
         @keyframes drift {
             to { transform: translate3d(-40px, -40px, 0); }
         }
+
+        .warp-speed-stars {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 4px;
+            height: 4px;
+            background: white;
+            border-radius: 50%;
+            box-shadow: 0 0 5px white, 0 0 10px white, 0 0 20px white;
+            animation: warp-speed-animation 2s linear forwards;
+          }
+
+          @keyframes warp-speed-animation {
+            from {
+              transform: translate(-50%, -50%) scale(1);
+              opacity: 1;
+            }
+            to {
+              transform: translate(-50%, -50%) scale(100);
+              opacity: 0;
+            }
+          }
 
         .equation {
             margin-top: 2rem;
@@ -298,14 +349,27 @@
     </style>
 </head>
 <body>
+    <div id="black-hole" style="display: none;"></div>
     <div class="galaxy" aria-hidden="true"></div>
     <div class="aura" aria-hidden="true"></div>
     <main id="portal">
         <div class="starmap" aria-hidden="true"></div>
-        <h1>
-            <span>Hello</span>
-            <span>World</span>
-        </h1>
+        <div class="word-container">
+            <div class="word">
+              <div class="letter">H</div>
+              <div class="letter">e</div>
+              <div class="letter">l</div>
+              <div class="letter">l</div>
+              <div class="letter">o</div>
+            </div>
+            <div class="word">
+              <div class="letter">W</div>
+              <div class="letter">o</div>
+              <div class="letter">r</div>
+              <div class="letter">l</div>
+              <div class="letter">d</div>
+            </div>
+          </div>
         <p class="subtitle">
             You have arrived at the <strong>edge of possibility</strong>, where code shimmers like constellations
             and imagination bends reality into <span class="cycle" id="cycle">echoes</span>.
@@ -314,6 +378,7 @@
         <div class="actions">
             <button class="primary-action" id="launch">Ignite the Aurora</button>
             <button class="ghost-action" id="listen">Hear the Silence</button>
+            <button class="primary-action" id="warp-speed" style="display: none;">Warp Speed</button>
         </div>
         <div class="equation">HELLO × WORLD = <span>∞</span></div>
         <div class="signature">TRANSMISSION • 001</div>
@@ -323,6 +388,8 @@
         const cycle = document.getElementById('cycle');
         const launch = document.getElementById('launch');
         const listen = document.getElementById('listen');
+        const warpSpeedButton = document.getElementById('warp-speed');
+        const blackHole = document.getElementById('black-hole');
 
         const phrases = ['auroras', 'echoes', 'dreams', 'signals', 'possibilities'];
         let index = 0;
@@ -353,6 +420,18 @@
 
         respond(portal);
 
+        document.addEventListener('mousemove', (e) => {
+            const letters = document.querySelectorAll('.letter');
+            letters.forEach(letter => {
+              const rect = letter.getBoundingClientRect();
+              const x = e.clientX - rect.left - rect.width / 2;
+              const y = e.clientY - rect.top - rect.height / 2;
+              const rotateX = (y / rect.height) * -30;
+              const rotateY = (x / rect.width) * 30;
+              letter.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+            });
+          });
+
         launch.addEventListener('click', () => {
             document.body.animate([
                 { filter: 'hue-rotate(0deg) saturate(1)' },
@@ -376,6 +455,75 @@
             oscillator.stop(now + 2.6);
             oscillator.addEventListener('ended', () => osc.close());
         });
+
+        let warpSpeedActive = false;
+        launch.addEventListener('click', () => {
+            warpSpeedButton.style.display = 'inline-block';
+        });
+
+        warpSpeedButton.addEventListener('click', () => {
+            if (warpSpeedActive) return;
+            warpSpeedActive = true;
+
+            const starsContainer = document.createElement('div');
+            starsContainer.style.position = 'absolute';
+            starsContainer.style.width = '100%';
+            starsContainer.style.height = '100%';
+            starsContainer.style.overflow = 'hidden';
+            document.body.appendChild(starsContainer);
+
+            for (let i = 0; i < 100; i++) {
+              const star = document.createElement('div');
+              star.classList.add('warp-speed-stars');
+              star.style.top = `${Math.random() * 100}%`;
+              star.style.left = `${Math.random() * 100}%`;
+              starsContainer.appendChild(star);
+            }
+
+            setTimeout(() => {
+              starsContainer.remove();
+              warpSpeedActive = false;
+            }, 2000);
+          });
+
+          let idleTimer;
+
+          function showBlackHole() {
+            blackHole.style.display = 'block';
+            setTimeout(() => blackHole.classList.add('active'), 10);
+
+            const elementsToPull = document.querySelectorAll('main > *:not(#black-hole)');
+            elementsToPull.forEach(el => {
+              el.classList.add('pull-in');
+              const rect = el.getBoundingClientRect();
+              const elX = rect.left + rect.width / 2;
+              const elY = rect.top + rect.height / 2;
+              const dx = window.innerWidth / 2 - elX;
+              const dy = window.innerHeight / 2 - elY;
+              el.style.transform = `translate(${dx}px, ${dy}px) scale(0)`;
+            });
+          }
+
+          function hideBlackHole() {
+            blackHole.classList.remove('active');
+            setTimeout(() => blackHole.style.display = 'none', 1000);
+
+            const elementsToPull = document.querySelectorAll('.pull-in');
+            elementsToPull.forEach(el => {
+              el.style.transform = 'translate(0, 0) scale(1)';
+              setTimeout(() => el.classList.remove('pull-in'), 1000);
+            });
+          }
+
+          function resetIdleTimer() {
+            clearTimeout(idleTimer);
+            hideBlackHole();
+            idleTimer = setTimeout(showBlackHole, 3000);
+          }
+
+          document.addEventListener('mousemove', resetIdleTimer);
+          document.addEventListener('keypress', resetIdleTimer);
+          resetIdleTimer();
     </script>
 </body>
 </html>
