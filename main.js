@@ -1,15 +1,17 @@
 import * as THREE from 'three';
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+import { SVGRenderer } from 'three/examples/jsm/renderers/SVGRenderer.js';
 
 // Create the scene
 const scene = new THREE.Scene();
+scene.background = new THREE.Color(0, 0, 0);
 
 // Create a camera
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 
 // Create a renderer
-const renderer = new THREE.WebGLRenderer();
+const renderer = new SVGRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
@@ -37,10 +39,10 @@ loader.load(
     'models/hippo.obj',
     (object) => {
         hippo = object;
-        // Change material to respond to light
+        // Change material to a basic material
         hippo.traverse((child) => {
             if (child instanceof THREE.Mesh) {
-                child.material = new THREE.MeshStandardMaterial({ color: 0x808080 });
+                child.material = new THREE.MeshBasicMaterial({ color: 0x808080 });
             }
         });
         scene.add(hippo);
