@@ -1,2 +1,0 @@
-# hippo
-Hippocalypse Now
