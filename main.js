@@ -1,39 +1,53 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
+console.log('Script loaded successfully');
+console.log('THREE:', typeof THREE);
+console.log('OrbitControls:', typeof OrbitControls);
+
 // Error handling
 window.addEventListener('error', (e) => {
+    console.error('Window error caught:', e);
     const errorDiv = document.getElementById('error');
+    const loadingDiv = document.getElementById('loading');
+    if (loadingDiv) loadingDiv.style.display = 'none';
     if (errorDiv) {
         errorDiv.style.display = 'block';
         errorDiv.textContent = `Error: ${e.message}\n${e.filename}:${e.lineno}`;
     }
-    console.error('Error:', e);
 });
 
 window.addEventListener('unhandledrejection', (e) => {
+    console.error('Unhandled rejection caught:', e);
     const errorDiv = document.getElementById('error');
+    const loadingDiv = document.getElementById('loading');
+    if (loadingDiv) loadingDiv.style.display = 'none';
     if (errorDiv) {
         errorDiv.style.display = 'block';
         errorDiv.textContent = `Unhandled Promise Rejection: ${e.reason}`;
     }
-    console.error('Unhandled rejection:', e);
 });
 
 try {
+    console.log('Creating scene...');
     // Create the scene
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0x1a1a2e);
+    console.log('Scene created');
 
     // Create a camera
+    console.log('Creating camera...');
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     camera.position.z = 5;
+    console.log('Camera created');
 
     // Create a WebGL renderer
+    console.log('Creating renderer...');
     const renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setPixelRatio(window.devicePixelRatio);
     document.body.appendChild(renderer.domElement);
+    console.log('Renderer created and added to DOM');
 
     // Add orbit controls for mouse interaction
     const controls = new OrbitControls(camera, renderer.domElement);
@@ -77,11 +91,16 @@ try {
     });
 
     // Hide loading message
+    console.log('Hiding loading message...');
     const loadingDiv = document.getElementById('loading');
     if (loadingDiv) {
         loadingDiv.style.display = 'none';
+        console.log('Loading message hidden');
+    } else {
+        console.warn('Loading div not found!');
     }
 
+    console.log('Starting animation loop...');
     // Animation loop
     function animate() {
         requestAnimationFrame(animate);
@@ -95,13 +114,20 @@ try {
     }
 
     animate();
+    console.log('Initialization complete!');
 } catch (error) {
-    console.error('Fatal error:', error);
+    console.error('Fatal error caught:', error);
+    console.error('Error message:', error.message);
+    console.error('Error stack:', error.stack);
     const errorDiv = document.getElementById('error');
     const loadingDiv = document.getElementById('loading');
-    if (loadingDiv) loadingDiv.style.display = 'none';
+    if (loadingDiv) {
+        loadingDiv.style.display = 'none';
+        console.log('Hiding loading on error');
+    }
     if (errorDiv) {
         errorDiv.style.display = 'block';
-        errorDiv.textContent = `Fatal Error: ${error.message}\n${error.stack}`;
+        errorDiv.textContent = `Fatal Error: ${error.message}\n\nStack:\n${error.stack}`;
+        console.log('Error displayed to user');
     }
 }
