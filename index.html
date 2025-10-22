@@ -8,13 +8,39 @@
         body {
             margin: 0;
             overflow: hidden;
+            background-color: #1a1a2e;
         }
         canvas {
             display: block;
         }
+        #loading {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-family: Arial, sans-serif;
+            font-size: 20px;
+        }
+        #error {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: red;
+            font-family: monospace;
+            font-size: 14px;
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+            max-width: 80%;
+            display: none;
+        }
     </style>
 </head>
 <body>
-    <script type="module" src="/main.js?v=1.0.1"></script>
+    <div id="loading">Loading 3D Scene...</div>
+    <div id="error"></div>
+    <script type="module" src="/main.js"></script>
 </body>
 </html>
