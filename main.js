@@ -1,69 +1,70 @@
 import * as THREE from 'three';
-import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-import { SVGRenderer } from 'three/examples/jsm/renderers/SVGRenderer.js';
 
 // Create the scene
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(0, 0, 0);
+scene.background = new THREE.Color(0x1a1a2e);
 
 // Create a camera
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+camera.position.z = 5;
 
-// Create a renderer
-const renderer = new SVGRenderer();
+// Create a WebGL renderer
+const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setPixelRatio(window.devicePixelRatio);
 document.body.appendChild(renderer.domElement);
 
-// Add controls
+// Add orbit controls for mouse interaction
 const controls = new OrbitControls(camera, renderer.domElement);
-controls.enableDamping = true; // an animation loop is required when either damping or auto-rotation are enabled
-controls.dampingFactor = 0.25;
-controls.screenSpacePanning = false;
-controls.maxPolarAngle = Math.PI / 2;
-
+controls.enableDamping = true;
+controls.dampingFactor = 0.05;
+controls.enableZoom = true;
+controls.autoRotate = false;
 
 // Add lighting
-const ambientLight = new THREE.AmbientLight(0x404040); // soft white light
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
 scene.add(ambientLight);
 
 const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
-directionalLight.position.set(1, 1, 1).normalize();
+directionalLight.position.set(5, 5, 5);
 scene.add(directionalLight);
 
-let hippo; // Variable to hold the hippo object
+const pointLight = new THREE.PointLight(0x00ff00, 1, 100);
+pointLight.position.set(-5, 3, -5);
+scene.add(pointLight);
 
-// Load the hippo model
-const loader = new OBJLoader();
-loader.load(
-    'models/hippo.obj',
-    (object) => {
-        hippo = object;
-        // Change material to a basic material
-        hippo.traverse((child) => {
-            if (child instanceof THREE.Mesh) {
-                child.material = new THREE.MeshBasicMaterial({ color: 0x808080 });
-            }
-        });
-        scene.add(hippo);
-    },
-    (xhr) => {
-        console.log((xhr.loaded / xhr.total * 100) + '% loaded');
-    },
-    (error) => {
-        console.error('An error happened', error);
-    }
-);
+// Create a colorful interactive cube
+const geometry = new THREE.BoxGeometry(2, 2, 2);
+const material = new THREE.MeshPhongMaterial({
+    color: 0xff6b6b,
+    shininess: 100,
+    specular: 0x444444
+});
+const cube = new THREE.Mesh(geometry, material);
+scene.add(cube);
 
-// Position the camera
-camera.position.z = 5;
+// Add edges to the cube for better visibility
+const edges = new THREE.EdgesGeometry(geometry);
+const line = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({ color: 0x000000 }));
+cube.add(line);
+
+// Handle window resize
+window.addEventListener('resize', () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+});
 
 // Animation loop
 function animate() {
     requestAnimationFrame(animate);
 
-    controls.update(); // only required if controls.enableDamping = true, or if controls.autoRotate = true
+    // Slight rotation for visual effect
+    cube.rotation.x += 0.005;
+    cube.rotation.y += 0.005;
 
+    controls.update();
     renderer.render(scene, camera);
 }
 
