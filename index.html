@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>3D Hippo Game</title>
+    <title>Hippocolypse Now</title>
     <style>
         body {
             margin: 0;
             overflow: hidden;
             background-color: #1a1a2e;
+            font-family: 'Arial', sans-serif;
         }
         canvas {
             display: block;
@@ -19,8 +20,8 @@
             left: 50%;
             transform: translate(-50%, -50%);
             color: white;
-            font-family: Arial, sans-serif;
-            font-size: 20px;
+            font-size: 24px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
         }
         #error {
             position: fixed;
@@ -36,11 +37,99 @@
             max-width: 80%;
             display: none;
         }
+        #ui {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            color: white;
+            font-size: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+            z-index: 100;
+        }
+        #title {
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #ff6b6b;
+        }
+        #health-bar {
+            width: 200px;
+            height: 20px;
+            background-color: rgba(0,0,0,0.5);
+            border: 2px solid white;
+            margin-top: 10px;
+            position: relative;
+        }
+        #health-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff0000, #00ff00);
+            width: 100%;
+            transition: width 0.3s;
+        }
+        #controls {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            color: white;
+            font-size: 14px;
+            background: rgba(0,0,0,0.7);
+            padding: 15px;
+            border-radius: 10px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+        }
+        #game-over {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 48px;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.9);
+            display: none;
+            text-align: center;
+            background: rgba(0,0,0,0.8);
+            padding: 40px;
+            border-radius: 20px;
+        }
+        #game-over button {
+            margin-top: 20px;
+            padding: 15px 30px;
+            font-size: 24px;
+            cursor: pointer;
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            transition: background 0.3s;
+        }
+        #game-over button:hover {
+            background: #ff5252;
+        }
     </style>
 </head>
 <body>
-    <div id="loading">Loading 3D Scene...</div>
+    <div id="loading">Loading Hippocolypse Now...</div>
     <div id="error"></div>
+    <div id="ui">
+        <div id="title">HIPPOCOLYPSE NOW</div>
+        <div>Score: <span id="score">0</span></div>
+        <div>Fruits: <span id="fruits">0</span></div>
+        <div>Enemies Defeated: <span id="enemies">0</span></div>
+        <div id="health-bar">
+            <div id="health-fill"></div>
+        </div>
+    </div>
+    <div id="controls">
+        <strong>Controls:</strong><br>
+        WASD / Arrow Keys - Move<br>
+        Mouse - Look Around<br>
+        Click / Space - Shoot Water
+    </div>
+    <div id="game-over">
+        <div>GAME OVER</div>
+        <div style="font-size: 24px; margin-top: 10px;">Final Score: <span id="final-score">0</span></div>
+        <button onclick="location.reload()">Play Again</button>
+    </div>
     <script type="module" src="/main.js"></script>
 </body>
 </html>
